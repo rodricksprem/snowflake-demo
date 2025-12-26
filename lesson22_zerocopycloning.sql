@@ -44,3 +44,32 @@ select * from dimcustomer where geographykey = 37 and customeralternatekey='AWS0
 
 select * from dimcustomer_clone where geographykey = 37 and customeralternatekey='AWS0011001_origin';
 
+--using timetravel + clone
+
+create or replace table dimcustomer_old as select * from dimcustomer at (offset => -60*5000);
+
+select * from dimcustomer_old limit 10;
+
+alter table dimcustomer 
+swap with dimcustomer_old;
+
+select * from dimcustomer limit 10;
+
+--mistakenly overwrite the existing dimcustomer table and recreated it  
+create or replace table dimcustomer (customerid varchar);
+
+select * from dimcustomer;
+
+select * from dimcustomer at(offset => -60*5); --Time travel data is not available for table DIMCUSTOMER. The requested time is either beyond the allowed time travel period or before the object creation time. reason is -> this table is newly created one 
+
+alter table dimcustomer rename to olddimcustomer;
+
+undrop table dimcustomer;
+
+select * from dimcustomer;
+
+
+
+
+
+
