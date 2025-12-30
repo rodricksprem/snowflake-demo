@@ -128,3 +128,5 @@ end;
 alter table if exists user modify column highest_degree set masking policy mask_degree using (highest_degree,visibility);
 
 select * from user;
+
+
